@@ -9,7 +9,7 @@ Idioma: todo en **español de España**, tanto el contenido como los comentarios
 - Cada participante apuesta un día.
 - **Solo gana quien acierta el día exacto.** Si varios eligieron ese día, ganan todos.
 - **No hay dinero.** Se decidió explícitamente no pedir dinero a nadie: no hay bote, ni repartos, ni sección de bases. No volver a añadirlos.
-- El premio es simbólico: quien gane se hace la foto con Catalina con un cartelito o un body que lleva su nombre. Por eso la web genera un **cartel imprimible**.
+- El premio es simbólico: se imprimirá un body con la foto y el nombre de quien gane. La web lo anuncia en la cabecera («Imprimiremos un body con la foto y el nombre de quien acierte el día exacto») y genera un **cartel imprimible** con el body.
 - Si nadie acierta, «la porra la gana Catalina» y el body dice «La gané yo».
 
 ## Estructura
@@ -17,7 +17,8 @@ Idioma: todo en **español de España**, tanto el contenido como los comentarios
 ```
 index.html   ← toda la web: HTML + CSS + JS en un único archivo, sin build ni dependencias
 assets/      ← ecografia.mp4 (vídeo en bucle, sin audio, ~370 KB), ecografia.jpg (póster), video.mp4 (original, ignorado en `.gitignore`)
-             y fotos/ para las fotos de los participantes
+             fotos/ (fotos de participantes ya recortadas: 160×160 JPG, nombre sin tildes, p. ej. jose.jpg)
+             img/ (originales que pasa Víctor, ignorados en `.gitignore`; se recortan con ffmpeg a fotos/: `crop=300:300:68:60,scale=160:160` sobre originales de 436 px; si la cara está más arriba o más grande, `crop=340:340:48:30`. Revisar siempre que la cara quede centrada en el círculo)
 README.md    ← instrucciones para publicar y mantener (orientado a personas)
 CLAUDE.md    ← este archivo
 ```
@@ -77,8 +78,9 @@ Hay dos Raqueles, y se distinguen como «(abuela)» y «(tía)». Los nombres de
 
 ### El body (SVG)
 - La silueta es el path `BODY` (viewBox `0 0 240 262`) y se dibuja con `drawOnesie(svg, lines)`. Lleva una costura discontinua recortada con `clipPath`, broches y dos pinzas de tender.
+- Tras el nacimiento, `drawOnesie(svg, lines, faces)` pone en el pecho la foto de cada ganador (o su inicial en un círculo blanco) y el nombre debajo. Con un solo ganador, la foto es más grande y «Raquel (abuela)» se parte en dos líneas. Si nadie acierta, no hay foto.
 - `fitText` ajusta el tamaño del texto para que quepa dentro, midiendo con `getComputedTextLength`. Por eso se vuelve a ejecutar tras `document.fonts.ready`.
-- **El cartel de impresión** (`#poster`, visible solo en `@media print`, A4 vertical) **clona el SVG ya ajustado** de la cabecera, renombrando los ids del `clipPath`. No se dibuja de cero porque un SVG oculto no se puede medir y el texto se saldría del body.
+- **El cartel de impresión** (`#poster`, visible solo en `@media print`, A4 vertical) **clona el SVG ya ajustado** de la cabecera, renombrando los ids de los `clipPath` (`onesie-` → `poster-`). No se dibuja de cero porque un SVG oculto no se puede medir y el texto se saldría del body.
 
 ## Diseño
 

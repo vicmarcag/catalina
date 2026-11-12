@@ -181,20 +181,20 @@ const CONFIG = {
   // foto (opcional): ruta a la imagen, p. ej. "assets/fotos/rafael.jpg".
   // Mejor cuadrada y pequeña (unos 120×120 px). Sin foto se ve la inicial.
   participantes: [
-    { nombre: "Rafael",          fecha: "2026-12-21" },
-    { nombre: "Sandra",          fecha: "2026-12-24" },
-    { nombre: "Jesús",           fecha: "2026-12-24" },
-    { nombre: "Adriana",         fecha: "2026-12-27" },
-    { nombre: "Raquel (abuela)", fecha: "2026-12-28" },
-    { nombre: "Ángela",          fecha: "2026-12-30" },
-    { nombre: "Marga",           fecha: "2026-12-31" },
-    { nombre: "Víctor",          fecha: "2027-01-01" },
-    { nombre: "José",            fecha: "2027-01-02" },
-    { nombre: "Javito",          fecha: "2027-01-02" },
-    { nombre: "Sheila",          fecha: "2027-01-02" },
-    { nombre: "Paloma",          fecha: "2027-01-03" },
-    { nombre: "Fer",             fecha: "2027-01-05" },
-    { nombre: "Raquel (tía)",    fecha: "2027-01-06" },
+    { nombre: "Rafael",          fecha: "2026-12-21", foto: "assets/fotos/rafael.jpg" },
+    { nombre: "Sandra",          fecha: "2026-12-24", foto: "assets/fotos/sandra.jpg" },
+    { nombre: "Jesús",           fecha: "2026-12-24", foto: "assets/fotos/jesus.jpg" },
+    { nombre: "Adriana",         fecha: "2026-12-27", foto: "assets/fotos/adriana.jpg" },
+    { nombre: "Raquel (abuela)", fecha: "2026-12-28", foto: "assets/fotos/raquel-abuela.jpg" },
+    { nombre: "Ángela",          fecha: "2026-12-30", foto: "assets/fotos/angela.jpg" },
+    { nombre: "Marga",           fecha: "2026-12-31", foto: "assets/fotos/marga.jpg" },
+    { nombre: "Víctor",          fecha: "2027-01-01", foto: "assets/fotos/victor.jpg" },
+    { nombre: "José",            fecha: "2027-01-02", foto: "assets/fotos/jose.jpg" },
+    { nombre: "Javito",          fecha: "2027-01-02", foto: "assets/fotos/javito.jpg" },
+    { nombre: "Sheila",          fecha: "2027-01-02", foto: "assets/fotos/sheila.jpg" },
+    { nombre: "Paloma",          fecha: "2027-01-03", foto: "assets/fotos/paloma.jpg" },
+    { nombre: "Fer",             fecha: "2027-01-05", foto: "assets/fotos/fer.jpg" },
+    { nombre: "Raquel (tía)",    fecha: "2027-01-06", foto: "assets/fotos/raquel-tia.jpg" },
   ],
   fiestas: {
     "2026-12-24": "Nochebuena",
@@ -235,21 +235,36 @@ const state = p => born ? (p.fecha === born ? "win" : "out") : (p.fecha < today 
 
 /* ---------- El body ---------- */
 const BODY = "M88 22 Q120 50 152 22 L194 34 Q214 46 230 78 L202 100 L186 86 L186 188 Q186 214 160 226 L148 250 L92 250 L80 226 Q54 214 54 188 L54 86 L38 100 L10 78 Q26 46 46 34 Z";
-function drawOnesie(svg, lines) {
+// faces: participantes cuya foto (o inicial) va en el pecho del body, encima del nombre
+function drawOnesie(svg, lines, faces = []) {
+  const id = svg.id || "p";
+  const n = faces.length, gap = 6;
+  const d = n ? Math.min(n === 1 ? 64 : 54, (118 - (n - 1) * gap) / n) : 0;   // diámetro de cada foto
+  const x0 = 120 - (n * d + (n - 1) * gap) / 2, cyF = 96;
+  const facesSvg = faces.map((p, i) => {
+    const cx = x0 + d / 2 + i * (d + gap), r = d / 2;
+    const inner = p.foto
+      ? `<clipPath id="${id}-av${i}"><circle cx="${cx}" cy="${cyF}" r="${r}"/></clipPath>
+         <image href="${esc(p.foto)}" x="${cx - r}" y="${cyF - r}" width="${d}" height="${d}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id}-av${i})"/>`
+      : `<text x="${cx}" y="${cyF + d * .17}" font-size="${d * .48}" font-family="Bricolage Grotesque, system-ui, sans-serif" font-weight="800" fill="var(--ink)" text-anchor="middle">${esc(p.nombre.charAt(0))}</text>`;
+    return `<circle cx="${cx}" cy="${cyF}" r="${r}" fill="var(--white)"/>${inner}<circle cx="${cx}" cy="${cyF}" r="${r}" fill="none" stroke="var(--ink)" stroke-width="2"/>`;
+  }).join("");
   svg.innerHTML = `
     <path d="${BODY}" fill="var(--pink)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
     <clipPath id="${svg.id || "p"}-clip"><path d="${BODY}"/></clipPath>
     <g clip-path="url(#${svg.id || "p"}-clip)"><path d="${BODY}" fill="none" stroke="var(--ink)" stroke-width="1.4" stroke-dasharray="4 5" opacity=".45" transform="translate(120 140) scale(.9) translate(-120 -140)"/></g>
     <g fill="#fff" stroke="var(--ink)" stroke-width="1.5"><circle cx="106" cy="240" r="3.2"/><circle cx="120" cy="240" r="3.2"/><circle cx="134" cy="240" r="3.2"/></g>
     <g fill="var(--white)" stroke="var(--ink)" stroke-width="2"><rect x="60" y="2" width="12" height="40" rx="3" transform="rotate(-8 66 22)"/><rect x="168" y="2" width="12" height="40" rx="3" transform="rotate(8 174 22)"/></g>
+    <g class="faces">${facesSvg}</g>
     <g class="txt" font-family="Bricolage Grotesque, system-ui, sans-serif" font-weight="800" fill="var(--ink)" text-anchor="middle">
       ${lines.map(l => `<text x="120">${esc(l)}</text>`).join("")}
     </g>`;
-  fitText(svg, lines.length);
+  fitText(svg, lines.length, n > 0);
 }
-function fitText(svg, n) {
+function fitText(svg, n, withFaces) {
   const texts = [...svg.querySelectorAll(".txt text")];
-  const maxW = 118, maxH = 112, cy = 150;
+  // Con fotos, el nombre baja y tiene menos alto disponible
+  const maxW = 118, maxH = withFaces ? 70 : 112, cy = withFaces ? 166 : 150;
   let size = n === 1 && texts[0].textContent.length <= 2 ? 84 : 40;
   const apply = s => texts.forEach((t, i) => { t.setAttribute("font-size", s); t.setAttribute("y", cy - ((n - 1) * s * 1.05) / 2 + i * s * 1.05 + s * .35); });
   apply(size);
@@ -266,14 +281,16 @@ const $ = id => document.getElementById(id);
 document.title = `La porra de ${B}`;
 $("ecoCap").textContent = `${B}, en la ecografía`;
 $("title").textContent = born ? `${B} ya está aquí` : `¿Qué día nacerá ${B}?`;
-let onesieLines = ["?"];
+let onesieLines = ["?"], onesieFaces = [];
 
 if (born) {
   $("status").textContent = `${B} nació el ${long(born)}.`;
   if (winners.length) {
     const names = winners.map(w => w.nombre);
-    $("sub").textContent = `${names.length > 1 ? "Acertaron" : "Acertó"} ${list(names)}, así que ${names.length > 1 ? "se hacen" : "se hace"} la foto con ${B} y el cartel.`;
-    onesieLines = names;
+    $("sub").textContent = `${names.length > 1 ? "Acertaron" : "Acertó"} ${list(names)}, así que imprimiremos un body con ${names.length > 1 ? "sus fotos y sus nombres" : "su foto y su nombre"}.`;
+    // Con un solo ganador, «Raquel (abuela)» va en dos líneas para que se lea más grande
+    onesieLines = names.length === 1 ? names[0].split(" (").map((t, i) => i ? "(" + t : t) : names;
+    onesieFaces = winners;
   } else {
     $("sub").textContent = `Nadie acertó el día, así que la porra la gana ella.`;
     onesieLines = ["La gané", "yo"];
@@ -286,7 +303,7 @@ if (born) {
     d === 1 ? `Salimos de cuentas mañana, ${long(CONFIG.fpp)}.` :
     d === 0 ? `Hoy salimos de cuentas.` :
     `Salíamos de cuentas el ${long(CONFIG.fpp)}. Llevamos ${-d} ${-d === 1 ? "día" : "días"} de propina.`;
-  $("sub").textContent = `Quien acierte el día exacto se hará la foto con ${B} llevando un cartel con su nombre.`;
+  $("sub").textContent = `Imprimiremos un body con la foto y el nombre de quien acierte el día exacto.`;
 }
 
 /* ---------- Calendario ---------- */
@@ -333,11 +350,11 @@ if (born) {
 
 /* ---------- Dibujo y cartel ---------- */
 function render() {
-  drawOnesie($("onesie"), onesieLines);
+  drawOnesie($("onesie"), onesieLines, onesieFaces);
   if (born) {
     const poster = $("poster");
     // El cartel copia el body ya ajustado (oculto no se puede medir el texto)
-    const svg = $("onesie").outerHTML.replaceAll("onesie-clip", "poster-clip").replace('id="onesie"', 'id="poster-onesie"');
+    const svg = $("onesie").outerHTML.replaceAll("onesie-", "poster-").replace('id="onesie"', 'id="poster-onesie"');
     poster.innerHTML = `${svg}
       <p>${winners.length ? (winners.length > 1 ? "Acertaron el día" : "Acertó el día") : "Nadie acertó el día"}<small>${esc(B)}, ${full(born)}</small></p>`;
   }
