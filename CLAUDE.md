@@ -35,6 +35,7 @@ Está al principio del `<script>` en `index.html`. Es lo único que debería hac
 | `fpp` | Fecha en la que sale de cuentas (`"2026-12-30"`). |
 | `nacimiento` | `null` hasta que nazca. Después, `"AAAA-MM-DD"`. Este campo cambia todo el estado de la página. |
 | `participantes` | `{ nombre, fecha, foto? }` con fechas ISO. El orden no importa porque se ordenan por fecha. `foto` es opcional (`"assets/fotos/x.jpg"`, cuadrada, ~120 px); sin ella se ve un círculo rosa con la inicial. |
+| `rango` | `{ desde, hasta }`: días que se ven siempre en el calendario (ahora del 14 dic al 10 ene). |
 | `fiestas` | Días señalados, con una etiqueta de texto en la celda. |
 
 Participantes actuales (15):
@@ -72,7 +73,7 @@ Hay dos Raqueles, y se distinguen como «(abuela)» y «(tía)». Los nombres de
 - En la cabecera hay una ecografía (`assets/ecografia.mp4`, `autoplay muted loop playsinline`) pegada con celo, a la derecha en escritorio y bajo el texto en tablet y móvil.
 
 ### Calendario
-- El rango se calcula solo: va desde el lunes de la semana de la primera fecha relevante hasta el domingo de la última. Las fechas relevantes son las apuestas, la `fpp` y el nacimiento, de modo que un nacimiento fuera de rango amplía el calendario.
+- El calendario va exactamente desde la primera fecha relevante hasta la última. Las fechas relevantes son `CONFIG.rango` (14 dic a 10 ene), las apuestas, la `fpp` y el nacimiento, de modo que una apuesta o un nacimiento fuera del rango lo amplía. En escritorio, los huecos para completar la primera y la última semana son celdas `.pad` vacías, que en móvil se ocultan.
 - En escritorio es una rejilla de 7 columnas (lunes a domingo). Por debajo de 700 px se convierte en una lista vertical de días.
 - Fechas: todo se maneja como cadenas `AAAA-MM-DD` y `Date` en hora local (`parse`/`key`). No usar `new Date("2026-12-30")`, porque lo interpreta en UTC y desplaza un día.
 

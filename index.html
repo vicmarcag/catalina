@@ -177,6 +177,9 @@
 const CONFIG = {
   bebe: "Catalina",
   fpp: "2026-12-30",       // fecha en la que salimos de cuentas
+  // Días que se ven siempre en el calendario. Si una apuesta o el nacimiento
+  // caen fuera, el calendario se amplía solo para incluirlos.
+  rango: { desde: "2026-12-14", hasta: "2027-01-10" },
   nacimiento: null,        // cuando nazca: "AAAA-MM-DD", p. ej. "2026-12-28"
   // foto (opcional): ruta a la imagen, p. ej. "assets/fotos/rafael.jpg".
   // Mejor cuadrada y pequeña (unos 120×120 px). Sin foto se ve la inicial.
@@ -309,13 +312,15 @@ if (born) {
 
 /* ---------- Calendario ---------- */
 (function calendar() {
-  const keys = people.map(p => p.fecha).concat(CONFIG.fpp, born ? [born] : []).sort();
+  const keys = people.map(p => p.fecha).concat(CONFIG.fpp, CONFIG.rango.desde, CONFIG.rango.hasta, born ? [born] : []).sort();
   const first = parse(keys[0]), last = parse(keys[keys.length - 1]);
-  const start = addDays(first, -((first.getDay() + 6) % 7));
-  const end = addDays(last, 6 - ((last.getDay() + 6) % 7));
+  // Se ven justo los días del rango; los huecos hasta completar la semana quedan vacíos
+  const start = first, end = last;
+  const pad = n => '<div class="pad" aria-hidden="true"></div>'.repeat(n);
   const wds = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"];
   const ring = `<svg class="ring" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"><path vector-effect="non-scaling-stroke" d="M58 6 C30 2 6 12 5 30 C4 50 30 58 55 56 C82 54 97 42 95 26 C93 10 70 3 44 7"/></svg>`;
   let html = wds.map(w => `<div class="wd">${w}</div>`).join("");
+  html += pad((first.getDay() + 6) % 7);
   for (let d = start; d <= end; d = addDays(d, 1)) {
     const k = key(d), bets = byDate[k] || [];
     const isPast = born ? k !== born : k < today;
@@ -334,6 +339,7 @@ if (born) {
       ${bets.length ? `<ul class="names">${bets.map(b => `<li class="${state(b)}">${avatar(b)}<span class="nm"><span class="t">${esc(b.nombre)}</span></span></li>`).join("")}</ul>` : ""}
     </div>`;
   }
+  html += pad(6 - ((last.getDay() + 6) % 7));
   $("cal").innerHTML = html;
   // En la leyenda, la fecha prevista con su mes: «30 dic.»
   const f = parse(CONFIG.fpp);
