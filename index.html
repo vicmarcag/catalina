@@ -188,7 +188,8 @@ const CONFIG = {
     { nombre: "Sandra",          fecha: "2026-12-24", foto: "assets/fotos/sandra.jpg" },
     { nombre: "Jesús",           fecha: "2026-12-24", foto: "assets/fotos/jesus.jpg" },
     { nombre: "Adriana",         fecha: "2026-12-27", foto: "assets/fotos/adriana.jpg" },
-    { nombre: "Raquel (abuela)", fecha: "2026-12-28", foto: "assets/fotos/raquel-abuela.jpg" },
+    { nombre: "Raquel G.",       fecha: "2026-12-28", foto: "assets/fotos/raquel-abuela.jpg" },
+    { nombre: "Jorge",           fecha: "2026-12-28", foto: "assets/fotos/jorge.jpg" },
     { nombre: "Ángela",          fecha: "2026-12-30", foto: "assets/fotos/angela.jpg" },
     { nombre: "Marga",           fecha: "2026-12-31", foto: "assets/fotos/marga.jpg" },
     { nombre: "Sara",            fecha: "2026-12-31", foto: "assets/fotos/sara.jpg" },
@@ -199,7 +200,7 @@ const CONFIG = {
     { nombre: "Paloma",          fecha: "2027-01-03", foto: "assets/fotos/paloma.jpg" },
     { nombre: "Blanca",          fecha: "2027-01-03", foto: "assets/fotos/blanca.jpg" },
     { nombre: "Fer",             fecha: "2027-01-05", foto: "assets/fotos/fer.jpg" },
-    { nombre: "Raquel (tía)",    fecha: "2027-01-06", foto: "assets/fotos/raquel-tia.jpg" },
+    { nombre: "Raquel I.",       fecha: "2027-01-06", foto: "assets/fotos/raquel-tia.jpg" },
   ],
   fiestas: {
     "2026-12-24": "Nochebuena",
@@ -293,8 +294,8 @@ if (born) {
   if (winners.length) {
     const names = winners.map(w => w.nombre);
     $("sub").textContent = `${names.length > 1 ? "Acertaron" : "Acertó"} ${list(names)}, así que imprimiremos un body con ${names.length > 1 ? "sus fotos y sus nombres" : "su foto y su nombre"}.`;
-    // Con un solo ganador, «Raquel (abuela)» va en dos líneas para que se lea más grande
-    onesieLines = names.length === 1 ? names[0].split(" (").map((t, i) => i ? "(" + t : t) : names;
+    // Un nombre con paréntesis, como «Ana (prima)», va en dos líneas para que se lea más grande
+    onesieLines = names.flatMap(n => n.split(" (").map((t, i) => i ? "(" + t : t));
     onesieFaces = winners;
   } else {
     $("sub").textContent = `Nadie acertó el día, así que la porra la gana ella.`;

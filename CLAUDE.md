@@ -38,28 +38,28 @@ Está al principio del `<script>` en `index.html`. Es lo único que debería hac
 | `rango` | `{ desde, hasta }`: días que se ven siempre en el calendario (ahora del 14 dic al 10 ene). |
 | `fiestas` | Días señalados, con una etiqueta de texto en la celda. |
 
-Participantes actuales (16):
+Participantes actuales (17):
 
 | Fecha | Nombres |
 |---|---|
 | 21 dic | Rafael |
 | 24 dic | Sandra, Jesús |
 | 27 dic | Adriana |
-| 28 dic | Raquel (abuela) |
+| 28 dic | Raquel G., Jorge |
 | 30 dic | Ángela |
 | 31 dic | Marga, Sara |
 | 1 ene | Víctor |
 | 2 ene | José, Javito, Sheila |
 | 3 ene | Paloma, Blanca |
 | 5 ene | Fer |
-| 6 ene | Raquel (tía) |
+| 6 ene | Raquel I. |
 
-Hay dos Raqueles, y se distinguen como «(abuela)» y «(tía)». Los nombres deben escribirse con tilde: José, Jesús, Ángela, Víctor.
+Hay dos Raqueles, y se distinguen por la inicial del apellido: «Raquel G.» (la abuela, foto `raquel-abuela.jpg`) y «Raquel I.» (la tía, foto `raquel-tia.jpg`), para que cada nombre ocupe una sola línea. Los nombres deben escribirse con tilde: José, Jesús, Ángela, Víctor.
 
 ## Comportamiento
 
 ### Estados
-- **Antes de nacer:** el body muestra «?». La cabecera dice cuántos días faltan para la fecha prevista o, si ya ha pasado, «N días de propina». Las apuestas cuyo día ya ha pasado aparecen tachadas (estado `out`) y las demás siguen en juego (`live`). Debajo del calendario aparece el recuento «Siguen en juego X de las 16 apuestas».
+- **Antes de nacer:** el body muestra «?». La cabecera dice cuántos días faltan para la fecha prevista o, si ya ha pasado, «N días de propina». Las apuestas cuyo día ya ha pasado aparecen tachadas (estado `out`) y las demás siguen en juego (`live`). Debajo del calendario aparece el recuento «Siguen en juego X de las 17 apuestas».
 - **Después de nacer** (`nacimiento` definido): el título cambia a «Catalina ya está aquí». El body lleva los nombres de quienes han ganado, uno por línea, o «La gané yo» si no hay ganador. En el calendario los ganadores aparecen subrayados en amarillo (`win`) y el resto tachados. Aparece también el botón «Imprimir el cartel».
 
 ### Parámetros de URL para probar (no tocan el código)
@@ -69,7 +69,7 @@ Hay dos Raqueles, y se distinguen como «(abuela)» y «(tía)». Los nombres de
 
 ### Fotos y ecografía
 - Cada nombre lleva su foto (o la inicial). Cuando ese día ya ha pasado (`out`), la foto se pone en gris; la de quien gana lleva un aro amarillo.
-- El subrayado amarillo va en un `span` inline con `box-decoration-break: clone` para que marque todas las líneas de un nombre largo como «Raquel (abuela)».
+- El subrayado amarillo va en un `span` inline con `box-decoration-break: clone` para que marque todas las líneas de un nombre largo que ocupe dos líneas.
 - En la cabecera hay una ecografía (`assets/ecografia.mp4`, `autoplay muted loop playsinline`) pegada con celo, a la derecha en escritorio y bajo el texto en tablet y móvil.
 
 ### Calendario
@@ -79,7 +79,7 @@ Hay dos Raqueles, y se distinguen como «(abuela)» y «(tía)». Los nombres de
 
 ### El body (SVG)
 - La silueta es el path `BODY` (viewBox `0 0 240 262`) y se dibuja con `drawOnesie(svg, lines)`. Lleva una costura discontinua recortada con `clipPath`, broches y dos pinzas de tender.
-- Tras el nacimiento, `drawOnesie(svg, lines, faces)` pone en el pecho la foto de cada ganador (o su inicial en un círculo blanco) y el nombre debajo. Con un solo ganador, la foto es más grande y «Raquel (abuela)» se parte en dos líneas. Si nadie acierta, no hay foto.
+- Tras el nacimiento, `drawOnesie(svg, lines, faces)` pone en el pecho la foto de cada ganador (o su inicial en un círculo blanco) y el nombre debajo. Con un solo ganador, la foto es más grande. Los nombres con paréntesis, como «Ana (prima)», se parten en dos líneas. Si nadie acierta, no hay foto.
 - `fitText` ajusta el tamaño del texto para que quepa dentro, midiendo con `getComputedTextLength`. Por eso se vuelve a ejecutar tras `document.fonts.ready`.
 - **El cartel de impresión** (`#poster`, visible solo en `@media print`, A4 vertical) **clona el SVG ya ajustado** de la cabecera, renombrando los ids de los `clipPath` (`onesie-` → `poster-`). No se dibuja de cero porque un SVG oculto no se puede medir y el texto se saldría del body.
 
