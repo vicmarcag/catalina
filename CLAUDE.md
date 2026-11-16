@@ -37,7 +37,7 @@ Está al principio del `<script>` en `index.html`. Es lo único que debería hac
 | `participantes` | `{ nombre, fecha, foto? }` con fechas ISO. El orden no importa porque se ordenan por fecha. `foto` es opcional (`"assets/fotos/x.jpg"`, cuadrada, ~120 px); sin ella se ve un círculo rosa con la inicial. |
 | `fiestas` | Días señalados, con una etiqueta de texto en la celda. |
 
-Participantes actuales (14):
+Participantes actuales (15):
 
 | Fecha | Nombres |
 |---|---|
@@ -49,7 +49,7 @@ Participantes actuales (14):
 | 31 dic | Marga |
 | 1 ene | Víctor |
 | 2 ene | José, Javito, Sheila |
-| 3 ene | Paloma |
+| 3 ene | Paloma, Blanca |
 | 5 ene | Fer |
 | 6 ene | Raquel (tía) |
 
@@ -58,7 +58,7 @@ Hay dos Raqueles, y se distinguen como «(abuela)» y «(tía)». Los nombres de
 ## Comportamiento
 
 ### Estados
-- **Antes de nacer:** el body muestra «?». La cabecera dice cuántos días faltan para la fecha prevista o, si ya ha pasado, «N días de propina». Las apuestas cuyo día ya ha pasado aparecen tachadas (estado `out`) y las demás siguen en juego (`live`). Debajo del calendario aparece el recuento «Siguen en juego X de las 14 apuestas».
+- **Antes de nacer:** el body muestra «?». La cabecera dice cuántos días faltan para la fecha prevista o, si ya ha pasado, «N días de propina». Las apuestas cuyo día ya ha pasado aparecen tachadas (estado `out`) y las demás siguen en juego (`live`). Debajo del calendario aparece el recuento «Siguen en juego X de las 15 apuestas».
 - **Después de nacer** (`nacimiento` definido): el título cambia a «Catalina ya está aquí». El body lleva los nombres de quienes han ganado, uno por línea, o «La gané yo» si no hay ganador. En el calendario los ganadores aparecen subrayados en amarillo (`win`) y el resto tachados. Aparece también el botón «Imprimir el cartel».
 
 ### Parámetros de URL para probar (no tocan el código)
